@@ -8,13 +8,22 @@ install:
 script:
 - hexo generate
 after_success:
+- "git clone $DEPLOY_REPO git_deploy"
+- "cd git_deploy"
+- "git checkout gh-pages"
+- "cd .."
+- "rm -r git_deploy/*"
+- "cp -r public/* git_deploy"
+- "cd git_deploy"
+- "git config --global push.default simple"
 - git config --global user.name "chunhei2008"
 - git config --global user.email "chunhei2008@qq.com"
-- sed -i'' "/^ *repo/s~github\.com~${GH_TOKEN}@github.com~" _config.yml
-- hexo deploy
+- "git add -A"
+- "git commit -m 'Site updated'"
+- "git push -q"
 branches:
   only:
-  - master
+  - source
 env:
   global:
     secure: eJrr2sgq3YuhLwnkphKiAL0Zy+RyBo68Eqf/UTyiBy+a5wacQqf1+xRxdWbIelfazKmCV1MqrhWKUClz/JDG14j2VZMJI9ltJ7y3hFWDixN/TXu97q7U9OAzaq7dx84tBy1gXU9zREnaLjz5fyQDDs6kWaZil+bE5IPbHkhT/zOMOaf2ahRmQ78v7etAqe5YXXX00/CPZmDispwbeiRouJ2vWCCMrZYxcszBq623/UL0jLKQ4QN+85SC3Hv66HtmONDKqN/8XnqhU0YSOvSrHnSMNUAkzTib5j9dEXRHRzdQ7fzp5YLVz7FVIhe/cQ7dNoNC8VxhB3OiKUhaFQXB2oe+K8VNnLynKZFaschEP/3679lmSywtkF3cVkRhUiHua3Zg4eHNvMx1cDuIDB2uft9ZrEUMl3fysd2eW4G0VKF1XXhlxL8WisR6c0oxJ1wfQQ10h/PX6h+jHHA+bi60GmvR0PBsbSWsFMPD1Kfc2BvY7n8jE+H0gn7c9MPDR2pwMRMAKylh0RcrifO5GeFK9IXDyqYkLsG/1uiv7wqaCUuQTOz6f/FqCOdgrh9yqDCPhuGGEhlXfGnwUMo114K4gI6+1PBwvopRxR5Ryc4eKlcDWbv104pYvzeq8Rk2IWEPWNbLXVO6bI8aHwoOJGq19VgL1bHn14DH9V9Hr8CXdMo=
