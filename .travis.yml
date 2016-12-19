@@ -1,0 +1,52 @@
+language: node_js
+
+node_js:
+  - "4"
+
+cache:
+  apt: true
+  directories:
+    - node_modules
+
+addons:
+  apt:
+    packages:
+      - graphicsmagick
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+  ssh_known_hosts: github.com
+
+before_install:
+  # Set Git config
+  - git config --global user.name "chunhei2008"
+  - git config --global user.email "chunhei2008@qq.com"
+  - git config --global push.default simple
+
+script:
+  # Clone the repository
+  - git clone https://${GH_TOKEN}@github.com/chunhei2008/site.git .deploy_git -v
+  # Update docs.
+  - git --version
+  - git remote add -f docs https://${GH_TOKEN}@github.com/chunhei2008/chunhei2008.github.io.git
+  # Install dependencies
+  - npm install --no-optional
+  # - npm info hexo-renderer-marked
+
+after_script:
+  - hexo generate && gulp
+  - cd .deploy_git
+  - git add -A
+  - git commit -am "Auto deploy from Travis-CI."
+  - git push --force
+
+branches:
+  only:
+    - master
