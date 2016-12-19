@@ -69,6 +69,5 @@ theme: landscape
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  message: update
   repo: https://github.com/chunhei2008/chunhei2008.github.io.git
-  branch: gh-pages
+  branch: master
