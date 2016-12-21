@@ -1,20 +1,55 @@
 language: node_js
+
 node_js:
-- '4'
+  - "4"
+
+cache:
+  apt: true
+  directories:
+    - node_modules
+
+addons:
+  apt:
+    packages:
+      - graphicsmagick
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+  ssh_known_hosts: github.com
+
 before_install:
-- npm install -g hexo-cli
-install:
-- npm install
+  # Set Git config
+  - git config --global user.name "chunhei2008"
+  - git config --global user.email "chunhei2008@qq.com"
+  - git config --global push.default simple
+
 script:
-- hexo generate
-after_success:
-- git config --global user.name "chunhei2008"
-- git config --global user.email "chunhei2008@qq.com"
-- sed -i'' "/^ *repo/s~github\.com~${GH_TOKEN}@github.com~" _config.yml
-- hexo deploy
+  # Clone the repository
+  - git clone https://${GH_TOKEN}@github.com/chunhei2008/chunhei2008.github.io.git .deploy_git -v
+  # Update docs.
+  - git --version
+  # Install dependencies
+  - npm install --no-optional
+  # - npm info hexo-renderer-marked
+
+after_script:
+  - hexo generate
+  - cp -r public/* .deploy_git/
+  - cd .deploy_git
+  - git add -A
+  - git commit -am "Auto deploy from Travis-CI."
+  - git push --force
+
 branches:
   only:
-  - source
+    - source
 env:
   global:
     secure: eJrr2sgq3YuhLwnkphKiAL0Zy+RyBo68Eqf/UTyiBy+a5wacQqf1+xRxdWbIelfazKmCV1MqrhWKUClz/JDG14j2VZMJI9ltJ7y3hFWDixN/TXu97q7U9OAzaq7dx84tBy1gXU9zREnaLjz5fyQDDs6kWaZil+bE5IPbHkhT/zOMOaf2ahRmQ78v7etAqe5YXXX00/CPZmDispwbeiRouJ2vWCCMrZYxcszBq623/UL0jLKQ4QN+85SC3Hv66HtmONDKqN/8XnqhU0YSOvSrHnSMNUAkzTib5j9dEXRHRzdQ7fzp5YLVz7FVIhe/cQ7dNoNC8VxhB3OiKUhaFQXB2oe+K8VNnLynKZFaschEP/3679lmSywtkF3cVkRhUiHua3Zg4eHNvMx1cDuIDB2uft9ZrEUMl3fysd2eW4G0VKF1XXhlxL8WisR6c0oxJ1wfQQ10h/PX6h+jHHA+bi60GmvR0PBsbSWsFMPD1Kfc2BvY7n8jE+H0gn7c9MPDR2pwMRMAKylh0RcrifO5GeFK9IXDyqYkLsG/1uiv7wqaCUuQTOz6f/FqCOdgrh9yqDCPhuGGEhlXfGnwUMo114K4gI6+1PBwvopRxR5Ryc4eKlcDWbv104pYvzeq8Rk2IWEPWNbLXVO6bI8aHwoOJGq19VgL1bHn14DH9V9Hr8CXdMo=

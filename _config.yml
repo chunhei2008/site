@@ -67,7 +67,3 @@ theme: landscape
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
-deploy:
-  type: git
-  repo: https://github.com/chunhei2008/chunhei2008.github.io.git
-  branch: master
